@@ -1,47 +1,62 @@
 import streamlit as st
-import pickle
-import pandas as pd
+import requests
 
-# Load saved model and features
-model = pickle.load(open('models/model.pkl', 'rb'))
-features = pickle.load(open('models/features.pkl', 'rb'))
+# =========================
+# PAGE TITLE
+# =========================
 
-# App title and description
 st.title("📧 Email Fraud Detection System")
+
 st.write(
     "This project detects whether an email is Spam/Fraud or Safe using Machine Learning."
 )
 
-# User input
+# =========================
+# USER INPUT
+# =========================
+
 email_text = st.text_area("Enter Email Text")
 
-# Prediction
+# =========================
+# PREDICTION BUTTON
+# =========================
+
 if st.button("Predict"):
 
     if email_text.strip() == "":
-        st.warning("Please enter some email text.")
+
+        st.warning("Please enter email text.")
+
     else:
-        # Create input dictionary with all features = 0
-        input_data = {word: 0 for word in features}
 
-        # Count words from user input
-        for word in email_text.lower().split():
-            if word in input_data:
-                input_data[word] += 1
+        data = {
 
-        # Convert to DataFrame
-        input_df = pd.DataFrame([input_data])
+            "email_text": email_text
+        }
 
-        # Predict
-        prediction = model.predict(input_df)
-        probability = model.predict_proba(input_df)
+        try:
 
-        # Show result
-        if prediction[0] == 1:
-            st.error(
-                f"🚨 Fraud / Spam Email ({probability[0][1] * 100:.2f}% confidence)"
+            response = requests.post(
+                "http://127.0.0.1:8000/predict",
+                json=data
             )
-        else:
-            st.success(
-                f"✅ Safe / Genuine Email ({probability[0][0] * 100:.2f}% confidence)"
-            )
+
+            result = response.json()
+
+            if result["prediction"] == "Spam":
+
+                st.error(
+                    f"🚨 Spam / Fraud Email "
+                    f"({result['confidence']}% confidence)"
+                )
+
+            else:
+
+                st.success(
+                    f"✅ Safe / Genuine Email "
+                    f"({result['confidence']}% confidence)"
+                )
+
+        except:
+
+            st.error("❌ FastAPI Backend Not Running")

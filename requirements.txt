@@ -1,4 +1,8 @@
 streamlit
+fastapi
+uvicorn
 pandas
 scikit-learn
-numpy
+mysql-connector-python
+requests
+pydantic
