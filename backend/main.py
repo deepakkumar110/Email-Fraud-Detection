@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from backend.database import conn, cursor
+# from backend.database import conn, cursor
 
 import pickle
 import pandas as pd
@@ -83,21 +83,21 @@ def predict(data: EmailInput):
     # SAVE TO MYSQL
     # =========================
 
-    query = """
-    INSERT INTO predictions
-    (email_text, prediction, confidence)
-    VALUES (%s, %s, %s)
-    """
-
-    values = (
-        email_text,
-        result,
-        confidence
-    )
-
-    cursor.execute(query, values)
-
-    conn.commit()
+    # query = """
+    # INSERT INTO predictions
+    # (email_text, prediction, confidence)
+    # VALUES (%s, %s, %s)
+    # """
+    #
+    # values = (
+    #     email_text,
+    #     result,
+    #     confidence
+    # )
+    #
+    # cursor.execute(query, values)
+    #
+    # conn.commit()
 
     # =========================
     # RETURN RESPONSE
