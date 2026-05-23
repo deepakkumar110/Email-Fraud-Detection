@@ -37,7 +37,7 @@ if st.button("Predict"):
         try:
 
             response = requests.post(
-                "http://127.0.0.1:8000/predict",
+                "https://email-fraud-detection-3.onrender.com/predict",
                 json=data
             )
 
